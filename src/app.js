@@ -1,5 +1,6 @@
 const express = require('express');
-const pool = require('./config/db')
+const pool = require('./config/db');
+const urlRoutes=require('./routes/url.routes')
 const app = express();
 
 app.use(express.json())
@@ -22,5 +23,7 @@ app.get('/health', async(req, res) => {
     });
   }
 })
+
+app.use('/api/url',urlRoutes);
 
 module.exports = app;
