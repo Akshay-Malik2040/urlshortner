@@ -24,6 +24,6 @@ app.get('/health', async(req, res) => {
   }
 })
 
-app.use('/api/url',urlRoutes);
+app.use('/api/urls',urlRoutes);
 
 module.exports = app;

@@ -43,7 +43,21 @@ const createShortUrl = async (originalUrl) => {
   return result.rows[0];
 };
 
+
+const getUrlByShortCode = async (shortCode) => {
+  const query = `
+    SELECT id, original_url, short_code, created_at
+    FROM urls
+    WHERE short_code = $1;
+  `;
+
+  const result = await pool.query(query, [shortCode]);
+
+  return result.rows[0] || null;
+};
+
 module.exports = {
   generateShortCode,
   createShortUrl,
+  getUrlByShortCode
 };
