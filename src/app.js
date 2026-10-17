@@ -26,4 +26,17 @@ app.get('/health', async(req, res) => {
 
 app.use('/api/urls',urlRoutes);
 
+// Centralized error-handling middleware
+app.use((err, req, res, next) => {
+  console.error(err);
+
+  if (res.headersSent) {
+    return next(err);
+  }
+
+  return res.status(500).json({
+    error: "Internal server error",
+  });
+});
+
 module.exports = app;
