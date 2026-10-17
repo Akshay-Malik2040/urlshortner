@@ -46,5 +46,22 @@ const redirectUrl = async (req, res) => {
     }
 }
 
+const urlDetails= async(req,res)=>{
+    try{
+        const {shortCode}= req.params;
+        const url=await getUrlByShortCode(shortCode);
 
-module.exports = { posturl,redirectUrl }
+        if(!url){
+            return res.status(404).json({
+                message: "Short URL not found",
+            })
+        }
+        res.status(500).json(url);
+
+    } catch(err){
+        res.status(404).json({
+            message:"ShortCode not found"
+        })
+    }
+}
+module.exports = { posturl,redirectUrl, urlDetails }
