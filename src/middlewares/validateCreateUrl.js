@@ -1,7 +1,11 @@
-function validateCreateUrl(req, res, next) {
-  const { original_url } = req.body;
 
-  if (typeof original_url !== "string" || !original_url.trim()) {
+function validateCreateUrl(req, res, next) {
+  const { original_url } = req.body ?? {};
+
+  if (
+    typeof original_url !== "string" ||
+    !original_url.trim()
+  ) {
     return res.status(400).json({
       error: "URL is required",
     });
@@ -11,7 +15,7 @@ function validateCreateUrl(req, res, next) {
 
   try {
     parsedUrl = new URL(original_url.trim());
-  } catch(err) {
+  } catch {
     return res.status(400).json({
       error: "Invalid URL format",
     });
@@ -27,4 +31,4 @@ function validateCreateUrl(req, res, next) {
   next();
 }
 
-module.exports = {validateCreateUrl};
+module.exports = { validateCreateUrl };

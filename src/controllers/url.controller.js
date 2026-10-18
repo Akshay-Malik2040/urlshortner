@@ -2,7 +2,9 @@ const { createShortUrl, getUrlByShortCode } = require("../services/url.service")
 
 const posturl = async (req, res) => {
     try {
-        const {original_url} = req.body;
+        const { original_url } = req.body;
+        console.log("Request body:", req.body);
+        console.log("originalUrl:", req.body?.originalUrl);
         if (!original_url) {
             return res.status(400).json({
                 message: "original_url is required",
@@ -24,9 +26,9 @@ const redirectUrl = async (req, res) => {
     try {
         const { shortCode } = req.params;
 
-        const url=await getUrlByShortCode(shortCode);
-        console.log("url is :",url);
-        if(!url){
+        const url = await getUrlByShortCode(shortCode);
+        console.log("url is :", url);
+        if (!url) {
             return res.status(404).json({
                 message: "Short URL not found",
             })
@@ -46,22 +48,22 @@ const redirectUrl = async (req, res) => {
     }
 }
 
-const urlDetails= async(req,res)=>{
-    try{
-        const {shortCode}= req.params;
-        const url=await getUrlByShortCode(shortCode);
+const urlDetails = async (req, res) => {
+    try {
+        const { shortCode } = req.params;
+        const url = await getUrlByShortCode(shortCode);
 
-        if(!url){
+        if (!url) {
             return res.status(404).json({
                 message: "Short URL not found",
             })
         }
         res.status(500).json(url);
 
-    } catch(err){
+    } catch (err) {
         res.status(404).json({
-            message:"ShortCode not found"
+            message: "ShortCode not found"
         })
     }
 }
-module.exports = { posturl,redirectUrl, urlDetails }
+module.exports = { posturl, redirectUrl, urlDetails }
