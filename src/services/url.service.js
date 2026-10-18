@@ -29,8 +29,9 @@ const generateShortCode = () => {
 };
 
 
+
 const createShortUrl = async (originalUrl) => {
-  const shortCode = generateShortCode();
+  const MAX_RETRIES = 5;
 
   const query = `
     INSERT INTO urls (original_url, short_code)
@@ -38,10 +39,34 @@ const createShortUrl = async (originalUrl) => {
     RETURNING id, original_url, short_code, created_at;
   `;
 
-  const result = await pool.query(query, [originalUrl, shortCode]);
+  for (let attempt = 0; attempt < MAX_RETRIES; attempt++) {
+    const shortCode = generateShortCode();
 
-  return result.rows[0];
+    try {
+      const result = await pool.query(query, [
+        originalUrl,
+        shortCode,
+      ]);
+
+      return result.rows[0];
+    } catch (error) {
+      const isShortCodeCollision =
+        error.code === "23505" &&
+        error.constraint === "urls_short_code_key";
+
+      if (!isShortCodeCollision) {
+        throw error;
+      }
+
+      if (attempt === MAX_RETRIES - 1) {
+        throw new Error(
+          "Failed to create a unique short code after 5 attempts"
+        );
+      }
+    }
+  }
 };
+
 
 
 const getUrlByShortCode = async (shortCode) => {
